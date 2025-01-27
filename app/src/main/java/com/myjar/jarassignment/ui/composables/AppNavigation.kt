@@ -89,6 +89,15 @@ fun ItemCard(item: ComputerItem, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Text(text = item.name, fontWeight = FontWeight.Bold, color = Color.Black)
+        item.data?.color?.let { color ->
+            Text(text = "Color: $color", fontWeight = FontWeight.Normal, color = Color.Black)
+        }
+        item.data?.capacity?.let { capacity ->
+            Text(text = "Capacity: $capacity", fontWeight = FontWeight.Normal, color = Color.Black)
+        }
+        item.data?.price?.let { price ->
+            Text(text = "Price: $price", fontWeight = FontWeight.Normal, color = Color.Black)
+        }
     }
 }
 
