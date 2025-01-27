@@ -1,5 +1,7 @@
 package com.myjar.jarassignment.ui.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,9 +68,6 @@ fun ItemListScreen(
 ) {
     val items by viewModel.listStringData.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    LaunchedEffect(items) {
-        viewModel.updateLocalData(context, items)
-    }
 
     if (navigate.value.isNotBlank()) {
         val currRoute = navController.currentDestination?.route.orEmpty()
@@ -72,11 +75,36 @@ fun ItemListScreen(
             navController.navigate("item_detail/${navigate.value}")
         }
     }
+
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+
+    LaunchedEffect(items) {
+        if (isConnected) {
+            viewModel.updateLocalData(context, items)
+        }
+    }
+    val query by viewModel.query.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        item {
+            OutlinedTextField(
+                value = query ?: "",
+                onValueChange = { viewModel.setQuery(it) },
+                trailingIcon = {
+                    AnimatedVisibility(visible = !query.isNullOrBlank()) {
+                        Image(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { viewModel.setQuery(null) })
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            )
+        }
         items(items) { item ->
             ItemCard(item = item, onClick = { onNavigateToDetail(item.id) })
             Spacer(modifier = Modifier.height(8.dp))
