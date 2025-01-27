@@ -32,10 +32,10 @@ fun AppNavigation(
     viewModel: JarViewModel,
 ) {
     val navController = rememberNavController()
-    val navigate = remember { mutableStateOf<String>("") }
 
     NavHost(modifier = modifier, navController = navController, startDestination = "item_list") {
         composable("item_list") {
+            val navigate = remember { mutableStateOf<String>("") }
             ItemListScreen(
                 viewModel = viewModel,
                 onNavigateToDetail = { selectedItem -> navigate.value = selectedItem },
