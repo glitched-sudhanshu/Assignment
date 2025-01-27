@@ -21,8 +21,8 @@ object DataStoreHelper {
     }
 
 
-    fun read(context: Context, key: String): Flow<String?> {
-        val prefKey = stringPreferencesKey(key)
+    fun read(context: Context): Flow<String?> {
+        val prefKey = stringPreferencesKey(AppConstants.COMPUTER_ITEMS)
         return context.dataStore.data.map {
             it[prefKey]
         }
